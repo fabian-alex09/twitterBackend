@@ -28,11 +28,18 @@ router.get ('/', async (req, res) => {
 });
 
 //get one user
-router.get ('/:id', async (req, res) => {
+router.get ('/:id', async(req, res) => {
     const {id} = req.params;
-    //need to transform id to Number since const{id} is a string from the parameters
-    const user = await prisma.user.findUnique({ where: {id: Number(id)}}); 
-    res.json(user);
+    try{
+        const user = await prisma.tweet.findUnique({ where: { id: Number(id)}});
+        if(!user){
+            res.status(404).json({ error: "User Not Found."});                
+        }else{
+            res.json(user);
+        }
+    }catch (e) {
+        res.status(404).json({ error: "User Not Found."});    
+    }
 });
 
 //update user
