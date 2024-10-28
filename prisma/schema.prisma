@@ -16,13 +16,35 @@ model User{
   updatedAt DateTime @updatedAt
   email String @unique
 
-  name String
-  username String @unique
+  name String?
+  username String? @unique
   image String?
   isVerified Boolean @default(false)
 
   tweet Tweet[]
+  token Token[]
 }
+
+model Token{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type String //email or JWT
+  emailToken String? @unique
+
+  valid Boolean @default(true) //when created valid, can later be invalidated under certain circumstances
+  expiration DateTime 
+
+  userId Int 
+  user User @relation(fields: [userId], references: [id])
+}
+
+//if db allows it, use enum for token type (sqlite does not have it)
+//enum TokenType{{
+  //EMAIL
+//  API
+//}
 
 model Tweet{
   id Int @id @default(autoincrement())
